@@ -1,0 +1,10 @@
+setup.py
+nd2shrink/__init__.py
+nd2shrink/__main__.py
+nd2shrink/main.py
+nd2shrink/read.py
+nd2shrink/save.py
+nd2shrink.egg-info/PKG-INFO
+nd2shrink.egg-info/SOURCES.txt
+nd2shrink.egg-info/dependency_links.txt
+nd2shrink.egg-info/top_level.txt

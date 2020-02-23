@@ -1,0 +1,6 @@
+numpy
+scikit-image
+pims_nd2
+pytest
+tifffile
+tqdm
