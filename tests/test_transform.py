@@ -1,5 +1,8 @@
 import numpy as np
 from nd2shrink import transform
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 def test_auto_shape(
     axes={'x': 2048, 'y': 2044, 'c': 2, 't': 62, 'm': 120},
