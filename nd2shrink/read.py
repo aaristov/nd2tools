@@ -3,7 +3,7 @@ import numpy as np
 import scipy
 from tqdm.auto import tqdm
 from skimage.transform import downscale_local_mean as downscale
-from nd2shrink import save
+from nd2shrink import save, transform
 from tifffile import TiffWriter, imread
 import logging
 import os
@@ -13,17 +13,16 @@ import json
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-def nd2(path:str, bundle_axes='tyx', pos_limit=None):
+def nd2(path:str, pos_limit=None):
     with nd.ND2_Reader(path,) as frames:
         logger.info(frames.sizes)
         logger.info(frames.metadata)
         json.dump(frames.metadata, open(path.replace('.nd2','_meta.json'), 'w'), default=repr)
-        frames.iter_axes = 'm'  # 't' is the default already
-        frames.bundle_axes = bundle_axes  # when 'z' is available, this will be default
-        # frames.default_coords['c'] = channel  # 0 is the default setting
-        # frames.default_coords['m'] = well_index
+        bundle = auto_order(frames.sizes)
+        frames.iter_axes = 'm'
+        frames.bundle_axes = bundle
         for well in tqdm(frames[:pos_limit]):
-            yield well
+            yield transform.Well(well, bundle)
 
 
 def tiff(path:str) -> np.ndarray:
@@ -33,4 +32,11 @@ def tiff(path:str) -> np.ndarray:
     tif = imread(path)
     return tif
 
-
+def auto_order(axes:dict):
+    '''
+    uses nd2.axes dict to output bundle combination
+    '''
+    keys = list(axes.keys())
+    default_order = transform.ImageJStack.default_order
+    order = list(filter(lambda k: k in keys, default_order))
+    return ''.join(order)
