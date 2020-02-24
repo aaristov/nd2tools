@@ -4,6 +4,47 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
+class ImageJStack:
+    default_order = 'tzcyxs'
+
+
+class Well(ImageJStack):
+    def __init__(self, array:np.ndarray, order:str):
+        assert array.ndim == len(order)
+        self.array = reshape_like_IJ(array, order)
+        self.order = ImageJStack.default_order
+        self.shape = self.array.shape
+
+    def downscale(self, factor):
+        array = downscale_local_mean(self.array, (1,1,1,factor,factor,1))
+        return Well(array, self.order)
+
+    def to_8bits(self):
+        arr = self.array.astype('f')
+        lim_shape = list(self.shape)
+        lim_shape[3:] = [1, 1, 1]
+        lim_shape[0] = 1
+        lim_shape = tuple(lim_shape)
+        _min = arr.min(axis=(0,3,4)).reshape(lim_shape)
+        _max = arr.max(axis=(0,3,4)).reshape(lim_shape)
+        logger.debug(f'min/max: {_min}/{_max}')
+        new_array = (arr - _min) * 255 / (_max - _min)
+        return Well(new_array.astype('uint8'), self.order)
+
+
+def reshape_like_IJ(array:np.ndarray, order:str):
+    default_order = ImageJStack.default_order
+    out_shape = [1] * len(default_order)
+    shape = array.shape
+
+    for i, k in enumerate(order):
+        default_index = default_order.index(k)
+        out_shape[default_index] = shape[i]
+
+    out_shape = tuple(out_shape)
+    return array.reshape(out_shape)
+
 def shape(sizes:dict, order:str = 'tzcyxs'):
     '''
     Generates a good shape for imagej tif stack.
@@ -44,14 +85,4 @@ def scale_down(well:np.ndarray, factor=4):
     return ds_well
 
 
-def rescale_16_8bits(array:np.ndarray):
-    '''
-    Reduce 16 to 8 bits with normalization
-    '''
-    assert array.dtype == np.uint16, f'assertion error {array.dtype}'
-    arr = array.astype('f')
-    _min, _max = arr.min(), arr.max()
-    logger.debug(f'min/max: {_min}/{_max}')
-    new_array = (arr - _min) * 255 / (_max - _min)
-    return new_array.astype('uint8')
 
