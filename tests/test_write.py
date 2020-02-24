@@ -7,7 +7,7 @@ import os, sys
 def test_save_zeros():
     arr = numpy.random.randint(0, 2**12, (20,256,256), dtype='uint16')
 
-    OK = save.tiff('zeros.tif', arr, 'none')
+    OK = save.tiff('zeros.tif', arr)
 
     assert os.path.exists('zeros.tif')
 
