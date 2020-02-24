@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-def tiff(fname:str, reader, rescale=4, to_8bits=False):
+def series_tiff(fname:str, reader, rescale=4, to_8bits=False):
     for i, well in enumerate(reader):
         ds_well = transform.scale_down(well, rescale)
         if to_8bits:
@@ -15,6 +15,10 @@ def tiff(fname:str, reader, rescale=4, to_8bits=False):
         name = fname.replace('.tif',f'_Pos_{i:03d}.tif')
         # ds_well.shape = 
         imsave(name, ds_well, imagej=True) #TZCYXS order
+    return True
+
+def tiff(fname:str, array:numpy.ndarray):
+    imsave(fname, array, imagej=True)
     return True
 
 def append_tiff(path, reader, rescale=4):
