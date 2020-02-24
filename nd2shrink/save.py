@@ -1,4 +1,3 @@
-from libtiff import TIFFimage
 import numpy
 from tifffile import TiffWriter, imsave
 from nd2shrink import transform
@@ -8,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-def tiff(fname:str, reader, rescale=4, to_8bits=True):
+def tiff(fname:str, reader, rescale=4, to_8bits=False):
     for i, well in enumerate(reader):
         ds_well = transform.scale_down(well, rescale)
         if to_8bits:
@@ -16,26 +15,6 @@ def tiff(fname:str, reader, rescale=4, to_8bits=True):
         name = fname.replace('.tif',f'_Pos_{i:03d}.tif')
         # ds_well.shape = 
         imsave(name, ds_well, imagej=True) #TZCYXS order
-    return True
-
-
-def __tiff(fname:str, array:numpy.ndarray, compression='none'):
-    '''
-    Saves the tif file
-    Parameters:
-    -----------
-
-    fname, str:
-        file path
-
-    array, numpy.ndarray:
-        input array
-
-    compression, str
-        'none' or 'lzw'
-    '''
-    im = TIFFimage(array)
-    im.write_file('zeros.tif', compression='none')
     return True
 
 def append_tiff(path, reader, rescale=4):
