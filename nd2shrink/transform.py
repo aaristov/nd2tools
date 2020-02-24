@@ -32,8 +32,14 @@ def scale_down(well:np.ndarray, factor=4):
     '''
     Downscales xy coordinates by factor
     '''
+    logger.debug(f'scale down well {well.shape} {well.ndim}d')
     vector = tuple([1] * (well.ndim - 2) + [factor] * 2)
-    ds_well = downscale_local_mean(well, vector).astype('uint16')
+    logger.debug(f'vector {vector}')
+    try:
+        ds_well = downscale_local_mean(well, vector).astype('uint16')
+    except Exception as e:
+        logger.error(f'unable to downscalse with vector {vector}')
+        raise e
     logger.debug(f'scale xy {well.shape} -> {ds_well.shape}')
     return ds_well
 
