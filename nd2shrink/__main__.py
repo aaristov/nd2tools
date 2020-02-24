@@ -2,7 +2,7 @@ from nd2shrink import read, save, transform
 import sys
 import os
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
@@ -11,16 +11,16 @@ def main(path, rescale = 4, to_8bits = True):
         logger.error('Provide valid .nd2 path')
         return False
 
-    reader = read.nd2(path, bundle_axes='tcyx', pos_limit=2)
+    reader = read.nd2(path, pos_limit=2)
 
-    new_path = path.replace('.nd2', '_downscale_4x.tif')
+    new_path = path.replace('.nd2', f'_downscale_{rescale}x.tif')
 
     for i, well in enumerate(reader):
-        ds_well = transform.scale_down(well, rescale)
+        ds_well = well.downscale(rescale)
         if to_8bits:
-            ds_well = transform.rescale_16_8bits(ds_well)
+            ds_well = ds_well.to_8bits()
         name = new_path.replace('.tif',f'_Pos_{i:03d}.tif')
-        save.tiff(name, ds_well)
+        save.tiff(name, ds_well.array)
     return True
 
 if __name__ == "__main__":
@@ -28,5 +28,3 @@ if __name__ == "__main__":
     path = args[-1]
 
     main(path)
-
-    
