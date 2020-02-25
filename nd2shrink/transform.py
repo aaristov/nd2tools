@@ -1,5 +1,6 @@
 import numpy as np
 from skimage.transform import downscale_local_mean
+from nd2shrink import save
 import logging
 
 logger = logging.getLogger(__name__)
@@ -10,15 +11,16 @@ class ImageJStack:
 
 
 class Well(ImageJStack):
-    def __init__(self, array:np.ndarray, order:str):
+    def __init__(self, array:np.ndarray, order:str, calibration_um:float=None):
         assert array.ndim == len(order)
         self.array = reshape_like_IJ(array, order)
         self.order = ImageJStack.default_order
         self.shape = self.array.shape
+        self.calibration_um = calibration_um
 
     def downscale(self, factor):
         array = downscale_local_mean(self.array, (1,1,1,factor,factor,1))
-        return Well(array, self.order)
+        return Well(array, self.order, self.calibration_um * factor)
 
     def to_8bits(self):
         arr = self.array.astype('f')
@@ -30,7 +32,10 @@ class Well(ImageJStack):
         _max = arr.max(axis=(0,3,4)).reshape(lim_shape)
         logger.debug(f'min/max: {_min}/{_max}')
         new_array = (arr - _min) * 255 / (_max - _min)
-        return Well(new_array.astype('uint8'), self.order)
+        return Well(new_array.astype('uint8'), self.order, self.calibration_um)
+
+    def save_tif(self, path):
+        save.tiff(path, self.array, self.calibration_um)
 
 
 def reshape_like_IJ(array:np.ndarray, order:str):
