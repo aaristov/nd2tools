@@ -2,11 +2,19 @@
 
 from setuptools import setup, find_packages
 
-setup(name='nd2shrink',
-      version='0.0.1',
+setup(name='nd2tif',
+      version='0.1.0',
       description='Compress nd2 into multi-dimentional tiff',
       author='Andrey Aristov',
       author_email='aaristov@pasteur.fr',
-      url='',
+      url='https://gitlab.pasteur.fr/aaristov/nd2shrink',
+      install_requires=[
+            'numpy', 
+            'scikit-image', 
+            'pims_nd2 @ git+https://github.com/aaristov/pims_nd2.git', 
+            'pytest', 
+            'tifffile', 
+            'tqdm'
+      ],
       packages=find_packages(),
      )
