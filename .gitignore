@@ -1,3 +1,7 @@
 *cache*
 *.pyc
 .tox*
+*build*
+*egg*
+*.ipynb
+*.tif
