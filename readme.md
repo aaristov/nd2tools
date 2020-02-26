@@ -1,4 +1,4 @@
-#  nd2 to tif tools
+#  nd2 to tif conversion tools
 
 ## Compress nd2 to tif with 4x binning and 16 to 8 bits conversion
 
