@@ -5,18 +5,22 @@ import numpy as np
 from tifffile import imsave
 import logging
 from tqdm import tqdm
+from nd2shrink.transform import Well
 
 logger = logging.getLogger(__name__)
+
 
 def get_paths(path):
     files = glob(os.path.join(path, '*', '*.nd2'))
     return files
 
 def get_conditions(files):
-    return set([f.split('\\')[-1].split('.')[0] for f in files])
+    return set([f.split(os.path.sep)[-1].split('.')[0] for f in files])
 
-def combine_input_files(path, conditions):
-    return {c: {'inputs': glob(path + rf'\*\{c}.nd2')} for c in conditions}
+def group_input_paths(path, conditions):
+    groups = {c: {'inputs': sorted(glob(os.path.join(path, '*', f'{c}.nd2')))} for c in conditions}
+    logger.info(f'Groups of {len(groups)} datasets: {groups}')
+    return groups
 
 def gen_out_folder_names(path, conditions, subname):
     return {c: os.path.join(path, subname, c) for c in conditions}
@@ -36,11 +40,12 @@ def create_out_folder(path, condition, subname='Combined'):
 def read_nd2(path:str, bundle_axes='yx', pos_limit=None):
     with nd.ND2_Reader(path,) as frames:
         logger.debug(frames.sizes)
-        logger.debug(frames.metadata)
-        frames.iter_axes = 'm'  # 't' is the default already
-        frames.bundle_axes = bundle_axes  # when 'z' is available, this will be default
+        # logger.debug(frames.metadata)
+        px_size_um = frames.metadata['calibration_um']
+        frames.iter_axes = 'm'
+        frames.bundle_axes = bundle_axes
         for well in frames[:pos_limit]:
-            yield well
+            yield {'well': well, 'order': bundle_axes, "calibration_um": px_size_um}
 
 def combine_nd2(*paths, out_folder):
     # get handlers to every file
@@ -49,30 +54,33 @@ def combine_nd2(*paths, out_folder):
     # stack them
     # save tif
     readers = [read_nd2(p) for p in paths]
+
     logger.info(f'Saving tifs to {os.path.join(out_folder, "Pos_XXX.tif")}')
+
     for i, images in tqdm(enumerate(zip(*readers))):
-        time_series = np.array(images, dtype='uint16')
+        time_series = np.array([im['well'] for im in images], dtype='uint16')
+        well = Well(time_series, 'tyx', images[0]['calibration_um'])
         logger.debug(time_series.shape)
         path = os.path.join(out_folder, f'Pos_{i:03d}.tif')
-        imsave(path, time_series, imagej=True )
+        well.save_tif(path)
         logger.debug(f'saving to {path}')
 
 
 def main():
 
-    subname = 'Combined1'
+    subname = 'Combined2'
 
     path = sys.argv[-1]
     logger.info(f'processing {path}')
-    
+
     files = get_paths(path)
     logger.info(f'found {len(files)} datasets: \n{files}')
 
     conditions = get_conditions(files)
-    logger.info(f'Found {len(conditions)}: \n{conditions}')
+    logger.info(f'Found {len(conditions)} conditions: \n{conditions}')
 
-    inputs = combine_input_files(path, conditions)
-    
+    inputs = group_input_paths(path, conditions)
+
     def process_condition(cond):
         logger.info(f'Condition: {cond}')
         out_folder = create_out_folder(path, cond, subname)
