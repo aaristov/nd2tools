@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='nd2tif',
-      version='0.1.0',
+      version='0.1.1',
       description='Compress nd2 into multi-dimentional tiff',
       author='Andrey Aristov',
       author_email='aaristov@pasteur.fr',
