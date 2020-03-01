@@ -1,4 +1,6 @@
 numpy
+scipy
+opencv-python
 scikit-image
 pims_nd2
 pytest
