@@ -15,7 +15,7 @@ def get_paths(path):
     return files
 
 def get_conditions(files):
-    return set([f.split(os.path.sep)[-1].split('.')[0] for f in files])
+    return set(sorted([f.split(os.path.sep)[-1].split('.')[0] for f in files]))
 
 def group_input_paths(path, conditions):
     groups = {c: {'inputs': sorted(glob(os.path.join(path, '*', f'{c}.nd2')))} for c in conditions}
@@ -38,10 +38,11 @@ def create_out_folder(path, condition, subname='Combined'):
     return out_dir
 
 def read_nd2(path:str, bundle_axes='yx', pos_limit=None):
+    logger.debug(f'read_nd2: open {path}')
     with nd.ND2_Reader(path,) as frames:
         logger.debug(frames.sizes)
         # logger.debug(frames.metadata)
-        px_size_um = frames.metadata['calibration_um']
+        px_size_um = frames.calibration
         frames.iter_axes = 'm'
         frames.bundle_axes = bundle_axes
         for well in frames[:pos_limit]:
@@ -68,7 +69,7 @@ def combine_nd2(*paths, out_folder):
 
 def main():
 
-    subname = 'Combined2'
+    subname = 'Combined'
 
     path = sys.argv[-1]
     logger.info(f'processing {path}')
