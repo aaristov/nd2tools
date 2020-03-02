@@ -16,5 +16,6 @@ setup(name='nd2tif',
             'tifffile', 
             'tqdm'
       ],
+      python_requires=">=3.8",
       packages=find_packages(),
      )
