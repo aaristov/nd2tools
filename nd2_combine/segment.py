@@ -17,8 +17,6 @@ def findSpheroid(
     threshold:float=0.5,
     max_ecc:float = 0.95,
     max_major_axis_length=300,
-    minRegionArea:int = 1000,
-    maxRegionArea:int = 120000,
     plot:bool=False
 ):
 
@@ -57,18 +55,6 @@ def findSpheroid(
 
     for i, region in enumerate(regionprops(imLabel)):
         logger.debug(f'filtering region {i}')
-        if region.area < minRegionArea:
-        #check it is inside or outside
-            logger.debug(f'area {region.area} < minRegionArea {minRegionArea}')
-            temp[imLabel == region.label] = 0
-            #region given same value as sph. border
-
-        if region.area > maxRegionArea:
-        #check it is inside or outside
-            logger.debug(f'area {region.area} > maxRegionArea {minRegionArea}')
-
-            temp[imLabel == region.label] = 0
-            #region given same value as sph. border
 
         if region.eccentricity > max_ecc:
         #check it is inside or outside
