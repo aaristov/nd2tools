@@ -4,5 +4,5 @@
 .vscode
 *build*
 *egg*
-*.ipynb
+# *.ipynb
 *.tif
