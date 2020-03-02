@@ -7,6 +7,7 @@
   - `conda create -n nd2 python=3.8`
   - `conda activate nd2`
 3. Install the package `pip install -U git+https://gitlab.pasteur.fr/aaristov/nd2shrink.git`
+4. Optional. On Windows you will need C++ runtime binaries to use `pims`. Download and install it from [here](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 
 
 ## Compress nd2 to tif with 4x binning and 16 to 8 bits conversion
