@@ -6,13 +6,21 @@ import matplotlib.pyplot as plt
 import matplotlib
 import logging
 
-# matplotlib.logging.basicConfig(level=logging.INFO)
+matplotlib.logging.basicConfig(level=logging.INFO)
 logging.basicConfig(level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
-def findSpheroid(imCropped, threshold = 0.5,
-                  minRegionArea = 1500, maxRegionArea = 120000, plot=False):
+def findSpheroid(
+    imCropped:np.ndarray,
+    sigma:float = 5,
+    threshold:float=0.5,
+    max_ecc:float = 0.95,
+    max_major_axis_length=300,
+    minRegionArea:int = 1000,
+    maxRegionArea:int = 120000,
+    plot:bool=False
+):
 
     """
 
@@ -34,7 +42,7 @@ def findSpheroid(imCropped, threshold = 0.5,
         plt.imshow(grad)
         plt.show()
 
-    toThresh = gaussian_filter(grad, sigma=5)
+    toThresh = gaussian_filter(grad, sigma=sigma)
 
     imThresh = toThresh > np.max(toThresh) * threshold
 
@@ -62,12 +70,17 @@ def findSpheroid(imCropped, threshold = 0.5,
             temp[imLabel == region.label] = 0
             #region given same value as sph. border
 
-        # if region.eccentricity > 0.8:
+        if region.eccentricity > max_ecc:
         #check it is inside or outside
-            # logger.debug(f'eccentricity {region.eccentricity} > 0.8')
+            logger.debug(f'eccentricity {region.eccentricity} > 0.8')
 
-            # temp[imLabel == region.label] = 0
+            temp[imLabel == region.label] = 0
             #region given same value as sph. border
+
+        if region.major_axis_length > max_major_axis_length:
+            logger.debug(f'major_axis_length {region.major_axis_length} > max_major_axis_length {max_major_axis_length}')
+            temp[imLabel == region.label] = 0
+
     if plot:
         plt.imshow(temp)
         plt.show()
@@ -77,6 +90,6 @@ def findSpheroid(imCropped, threshold = 0.5,
 
 def get_props(mask:np.ndarray):
     lab = label(mask)
-    assert lab.max() == 1, f'number of segments is {lab.max()}'
-    reg = regionprops(lab)[0]
-    return {'area': reg.area, 'eccentricity': reg.eccentricity}
+    # assert lab.max() == 1, f'number of segments is {lab.max()}'
+    reg = regionprops(lab)
+    return [{'area': r.area, 'eccentricity': r.eccentricity, 'major_axis_length': r.major_axis_length} for r in reg]
