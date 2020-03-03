@@ -19,7 +19,9 @@ def main(path):
         )
     )
     df = pd.DataFrame(res)
-    df.to_csv(path.replace('.nd2', '_stats.csv'))
+    csv_path = path.replace('.nd2', '_stats.csv')
+    df.to_csv(csv_path)
+    logger.info(f'Saved stats to {csv_path}')
 
 def create_results_dir(nd2_path):
     dirr = nd2_path.replace('.nd2','')
