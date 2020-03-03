@@ -4,7 +4,7 @@ import numpy as np
 from skimage.draw import ellipse
 from skimage.transform import rotate
 
-from nd2_combine import segment
+import segment
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
