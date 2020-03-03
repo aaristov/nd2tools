@@ -18,7 +18,7 @@ def findSpheroid(
     erode:int = 3,
     threshold:float=0.5,
     max_ecc:float = 0.95,
-    lim_major_axis_length:tuple=(100, 300),
+    lim_major_axis_length:tuple=(100, 400),
     plot:bool=False
 ):
 
