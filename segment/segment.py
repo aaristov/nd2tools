@@ -39,8 +39,11 @@ def findSpheroid(
 #     mask = _makeDiskMask(wellDiameter, wellDiameter-marginDistance-20, aspectRatio)
     grad = np.sqrt(result1 ** 2 + result2 ** 2)
     if plot:
-        plt.imshow(grad)
-        plt.show()
+        f, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4, sharey=True, sharex=True, figsize=(10,3))
+        ax1.imshow(imCropped, cmap='gray')
+        ax1.set_title('raw')
+        ax2.imshow(grad)
+        ax2.set_title('grad')
 
     toThresh = gaussian_filter(grad, sigma=sigma)
 
@@ -55,8 +58,8 @@ def findSpheroid(
     imLabel = label(temp)
     logger.debug(f'found {imLabel.max()} regions')
     if plot:
-        plt.imshow(imLabel)
-        plt.show()
+        ax3.imshow(imLabel)
+        ax3.set_title('all regions')
 
     for i, region in enumerate(regionprops(imLabel)):
         logger.debug(f'filtering region {i}')
@@ -73,9 +76,9 @@ def findSpheroid(
             temp[imLabel == region.label] = 0
 
     if plot:
-        plt.imshow(temp)
-        plt.show()
-
+        ax4.imshow(temp)
+        ax4.set_title('Selected regions')
+        return temp, f
     return temp
 
 
