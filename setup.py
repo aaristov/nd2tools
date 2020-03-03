@@ -3,8 +3,8 @@
 from setuptools import setup, find_packages
 
 setup(name='nd2tif',
-      version='0.1.2-dev',
-      description='Compress nd2 into multi-dimentional tiff',
+      version='0.2.0-dev',
+      description='Compress nd2 into multi-dimensional tiff',
       author='Andrey Aristov',
       author_email='aaristov@pasteur.fr',
       url='https://gitlab.pasteur.fr/aaristov/nd2shrink',
