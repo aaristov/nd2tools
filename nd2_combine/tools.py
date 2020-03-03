@@ -45,8 +45,8 @@ def read_nd2(path:str, bundle_axes='yx', pos_limit=None):
         px_size_um = frames.calibration
         frames.iter_axes = 'm'
         frames.bundle_axes = bundle_axes
-        for well in frames[:pos_limit]:
-            yield {'well': well, 'order': bundle_axes, "calibration_um": px_size_um}
+        for index, well in enumerate(frames[:pos_limit]):
+            yield {'well_index': index, 'well': well, 'order': bundle_axes, "calibration_um": px_size_um}
 
 def combine_nd2(*paths, out_folder):
     # get handlers to every file
