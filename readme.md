@@ -30,5 +30,25 @@
       - Pos_001.tif <- D1, D2 images for well 1
       - Pos_002.tif <- D1, D2 images for well 2
 
+# Segment organoids in bright field
 
+### Use
+
+`python -m segment dataset.nd2`
+
+#### Input:
+
+- Folder:
+  - D1: 
+    - dataset.nd2
+
+#### Output:
+
+- Folder:
+  - D1:
+    - dataset.nd2
+    - dataset_stats.csv <- table with columns (area, eccentricity, major_axis_length) all in pixels.
+    - dataset:
+      - Pos_000.png
+      - Pos_001.png
 
