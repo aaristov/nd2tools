@@ -3,4 +3,4 @@ WORKDIR /root
 COPY . .
 RUN python -V &&\
     python setup.py install
-CMD /bin/bash
+CMD python -V && /bin/bash
