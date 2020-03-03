@@ -7,11 +7,13 @@ logger = logging.getLogger(__name__)
 
 
 class ImageJStack:
-    default_order = 'tzcyxs'
+    default_order = "tzcyxs"
 
 
 class Well(ImageJStack):
-    def __init__(self, array:np.ndarray, order:str, calibration_um:float=None):
+    def __init__(
+        self, array: np.ndarray, order: str, calibration_um: float = None
+    ):
         assert array.ndim == len(order)
         self.array = reshape_like_IJ(array, order)
         self.order = ImageJStack.default_order
@@ -19,26 +21,26 @@ class Well(ImageJStack):
         self.calibration_um = calibration_um
 
     def downscale(self, factor):
-        array = downscale_local_mean(self.array, (1,1,1,factor,factor,1))
+        array = downscale_local_mean(self.array, (1, 1, 1, factor, factor, 1))
         return Well(array, self.order, self.calibration_um * factor)
 
     def to_8bits(self):
-        arr = self.array.astype('f')
+        arr = self.array.astype("f")
         lim_shape = list(self.shape)
         lim_shape[3:] = [1, 1, 1]
         lim_shape[0] = 1
         lim_shape = tuple(lim_shape)
-        _min = arr.min(axis=(0,3,4)).reshape(lim_shape)
-        _max = arr.max(axis=(0,3,4)).reshape(lim_shape)
-        logger.debug(f'min/max: {_min}/{_max}')
+        _min = arr.min(axis=(0, 3, 4)).reshape(lim_shape)
+        _max = arr.max(axis=(0, 3, 4)).reshape(lim_shape)
+        logger.debug(f"min/max: {_min}/{_max}")
         new_array = (arr - _min) * 255 / (_max - _min)
-        return Well(new_array.astype('uint8'), self.order, self.calibration_um)
+        return Well(new_array.astype("uint8"), self.order, self.calibration_um)
 
     def save_tif(self, path):
         save.tiff(path, self.array, self.calibration_um)
 
 
-def reshape_like_IJ(array:np.ndarray, order:str):
+def reshape_like_IJ(array: np.ndarray, order: str):
     default_order = ImageJStack.default_order
     out_shape = [1] * len(default_order)
     shape = array.shape
@@ -50,8 +52,9 @@ def reshape_like_IJ(array:np.ndarray, order:str):
     out_shape = tuple(out_shape)
     return array.reshape(out_shape)
 
-def shape(sizes:dict, order:str = 'tzcyxs'):
-    '''
+
+def shape(sizes: dict, order: str = "tzcyxs"):
+    """
     Generates a good shape for imagej tif stack.
 
     Parameters:
@@ -60,7 +63,7 @@ def shape(sizes:dict, order:str = 'tzcyxs'):
         nd2.sizes dict
     order: str
         axis order in imagej. Default 'tzcyxs'
-    '''
+    """
 
     keys = list(sizes.keys())
     shape = [1] * len(order)
@@ -74,20 +77,17 @@ def shape(sizes:dict, order:str = 'tzcyxs'):
     return tuple(shape)
 
 
-def scale_down(well:np.ndarray, factor=4):
-    '''
+def scale_down(well: np.ndarray, factor=4):
+    """
     Downscales xy coordinates by factor
-    '''
-    logger.debug(f'scale down well {well.shape} {well.ndim}d')
+    """
+    logger.debug(f"scale down well {well.shape} {well.ndim}d")
     vector = tuple([1] * (well.ndim - 2) + [factor] * 2)
-    logger.debug(f'vector {vector}')
+    logger.debug(f"vector {vector}")
     try:
-        ds_well = downscale_local_mean(well, vector).astype('uint16')
+        ds_well = downscale_local_mean(well, vector).astype("uint16")
     except Exception as e:
-        logger.error(f'unable to downscalse with vector {vector}')
+        logger.error(f"unable to downscalse with vector {vector}")
         raise e
-    logger.debug(f'scale xy {well.shape} -> {ds_well.shape}')
+    logger.debug(f"scale xy {well.shape} -> {ds_well.shape}")
     return ds_well
-
-
-
