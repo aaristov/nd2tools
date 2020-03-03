@@ -16,7 +16,8 @@ setup(name='nd2tif',
             'pims_nd2 @ git+https://github.com/aaristov/pims_nd2.git',
             'pytest',
             'tifffile',
-            'tqdm'
+            'tqdm',
+            'pandas'
       ],
       packages=find_packages(),
      )
