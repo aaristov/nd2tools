@@ -6,6 +6,7 @@ from nd2shrink import transform
 
 def main(path, factor=16):
     file = nd.ND2Reader(path)
+    print(file.sizes)
     tczyx = []
     for t in range(file.sizes['t']):
         print(f't: {t}')
