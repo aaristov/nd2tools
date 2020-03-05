@@ -63,7 +63,7 @@ def reshape_like_IJ(array: np.ndarray, order: str):
     assert rarray.ndim == len(ij)
     from_order = np.arange(dim_diff, rarray.ndim)
     to_order = [ij.index(d) for d in order]
-    print(from_order, to_order)
+    logger.debug('from_order, to_order', from_order, to_order)
     sarray = np.moveaxis(rarray, from_order, to_order)
     return sarray
 
