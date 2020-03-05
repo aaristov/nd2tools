@@ -8,6 +8,19 @@ logger = logging.getLogger(__name__)
 
 class ImageJStack:
     default_order = "tzcyxs"
+    array = np.ndarray
+    order = str
+    shape = tuple
+    calibration_um = float
+
+    def downscale(self, factor):
+        pass
+
+    def to_8bits(self):
+        pass
+
+    def save_tif(self, path):
+        pass
 
 
 class Well(ImageJStack):
@@ -41,16 +54,19 @@ class Well(ImageJStack):
 
 
 def reshape_like_IJ(array: np.ndarray, order: str):
-    default_order = ImageJStack.default_order
-    out_shape = [1] * len(default_order)
-    shape = array.shape
+    assert [d in (ij := ImageJStack.default_order) for d in order], f'Order {order} in incompatible with IJ {ij}'
+    assert array.ndim == len(order), f'Order {order} in incompatible with array ndim {array.shape}'
+    dim_diff = len(ij) - len(order)
+    shape = tuple([1] * dim_diff + list(array.shape))
+    rarray = array.reshape(shape)
+    assert rarray.ndim == len(ij)
+    from_order = np.arange(dim_diff, rarray.ndim)
+    to_order = [ij.index(d) for d in order]
+    print(from_order, to_order)
+    sarray = np.moveaxis(rarray, from_order, to_order)
+    return sarray
 
-    for i, k in enumerate(order):
-        default_index = default_order.index(k)
-        out_shape[default_index] = shape[i]
 
-    out_shape = tuple(out_shape)
-    return array.reshape(out_shape)
 
 
 def shape(sizes: dict, order: str = "tzcyxs"):
