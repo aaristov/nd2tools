@@ -1,33 +1,38 @@
-import nd2reader as nd
+from pims_nd2 import ND2_Reader
 import numpy as np
 import sys
 from nd2shrink import transform
 
 
 def main(path, factor=16):
-    file = nd.ND2Reader(path)
+    file = ND2_Reader(path)
     print(file.sizes)
     tczyx = []
-    for t in range(file.sizes['t']):
-        print(f't: {t}')
-        file.default_coords['t'] = t
+    try:
+        time = file.sizes['t']
+    except KeyError:
+        time = 1
+    try:
+        channels = file.sizes['c']
+    except KeyError:
+        channels = 1
+    for t in range(time):
         czyx = []
-        for c in range(file.sizes['c']):
-            print(f'c {c}')
-            file.default_coords['c'] = c
-            file.iter_axes = 'z'
-            zyx = []
-            print('z', end='')
-            for yx in file:
-                print('.', end='')
-                dyx = transform.scale_down(yx, factor=factor)
-                zyx.append(dyx)
-            czyx.append(zyx)
-            print(len(czyx), len(zyx), dyx.shape)
+        print('c', end=' ')
+        for c in range(channels):
+            print(f'\rc{c}', end='')
+            if channels > 1:
+                file.default_coords['c']=c
+            data = file[t]
+            assert data.ndim == 3
+            scaled = transform.scale_down(data, factor)
+            czyx.append(scaled)
         tczyx.append(czyx)
-    tczyx_np = np.array(tczyx, dtype=yx.dtype)
+        print(f'\rt{t+1}/{time}', '.'*(t+1))
+    print('done reading')
+    tczyx_np = np.array(tczyx, dtype=scaled.dtype)
     print(tczyx_np.shape)
-    w = transform.Well(tczyx_np, 'tczyx', file.metadata['pixel_microns'] * factor)
+    w = transform.Well(tczyx_np, 'tczyx', file.calibration * factor)
     save_path = path.replace('.nd2', '_downscale_16x.tif')
     w.save_tif(save_path)
     print(f'saved to {save_path}')
