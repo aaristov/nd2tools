@@ -31,6 +31,16 @@ def test_scale_down():
     np.testing.assert_array_equal(np.zeros((4, 4)), s_arr)
 
 
+def test_scale_big():
+    big_shape = (8858, 7103)
+    factor = 16
+    padding = tuple(int(s % factor > 0) for s in big_shape)
+    expected_d16 = tuple(s // factor + p for s, p in zip(big_shape, padding))
+    test_array = np.zeros(big_shape)
+    d16_array = transform.scale_down(test_array, factor=int(factor))
+    np.testing.assert_array_equal(d16_array.shape, expected_d16)
+
+
 def test_reshape_like_IJ():
     arr = np.ones((2, 4, 5))
     order = "zyx"
