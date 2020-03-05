@@ -2,6 +2,7 @@ import numpy as np
 from skimage.transform import downscale_local_mean
 from nd2shrink import save
 import logging
+from nd2reader import ND2Reader
 
 logger = logging.getLogger(__name__)
 
@@ -107,3 +108,30 @@ def scale_down(well: np.ndarray, factor=4):
         raise e
     logger.debug(f"scale xy {well.shape} -> {ds_well.shape}")
     return ds_well
+
+
+def recursive_downscale(file: ND2Reader, axes: list, sizes: dict, mod):
+    '''
+    recursively reads axes of nd2
+    '''
+
+    arr = []
+    ax = axes.pop()
+    print(f'ax: {ax}, axes: {axes}')
+    size = sizes[ax]
+    if len(axes) > 0:
+        for a in range(size):
+            print(f'{ax}: {a+1}/{size}')
+            file.default_coords[ax] = a
+            res = recursive_downscale(file, axes, sizes, mod)
+            arr.append(res)
+        return np.array(arr, dtype=res.dtype)
+    else:
+        file.iter_axes = ax
+        for yx in file:
+            print('.', end='')
+            res = mod(yx)
+            arr.append(res)
+        print(len(arr), yx.shape, ' -> ', res.shape)
+        axes.append(ax)
+        return np.array(arr, dtype=yx.dtype)
