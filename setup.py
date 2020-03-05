@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="nd2tif",
-    version="0.2.0-dev",
+    version="0.3.0-dev",
     description="Compress nd2 into multi-dimensional tiff",
     author="Andrey Aristov",
     author_email="aaristov@pasteur.fr",
@@ -15,6 +15,7 @@ setup(
         "opencv-python",
         "scikit-image",
         "pims_nd2 @ git+https://github.com/aaristov/pims_nd2.git",
+        "nd2reader",
         "pytest",
         "tifffile",
         "tqdm",

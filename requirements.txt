@@ -3,6 +3,7 @@ scipy
 opencv-python
 scikit-image
 pims_nd2
+nd2reader
 pytest
 tifffile
 tqdm

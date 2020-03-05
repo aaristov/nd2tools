@@ -16,7 +16,14 @@
 
 `python -m nd2shrink path_to_nd2`
 
-# combine several nd2 into tif time series
+# Bin 16x stitched nd2:
+
+### Use:
+`python -m bin_stitched path_to_nd2`
+
+Creates ImageJ-formatted tif file in the same folder. Can be opened by drag'n'drop in Fiji/ImageJ.
+
+# Combine several nd2 into tif time series
 
 ### Use
 
