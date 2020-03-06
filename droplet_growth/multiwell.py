@@ -3,6 +3,7 @@ import pims_nd2 as nd
 import json
 import logging
 import matplotlib.pyplot as plt
+from scipy.ndimage import gaussian_filter, binary_erosion, binary_fill_holes, label, measurements
 
 
 logger = logging.getLogger(__name__)
@@ -29,10 +30,13 @@ def read_stitched_nd2(path: str, bundle="zyx", channel=0, time_limit=None):
 
 
 def detect_wells(bf: np.ndarray, thr=0.1, sigma=2, erode=5, plot=False):
+    '''
+    Return mask of wells
+    '''
     grad = get_2d_gradient(bf)
     sm_grad = gaussian_filter(grad, sigma)
     mask = sm_grad > sm_grad.max() * thr
-    filled_mask = binary_erosion(binary_fill_holes(mask), structure=np.ones((erode,erode)))
+    filled_mask = binary_erosion(binary_fill_holes(mask), structure=np.ones((erode, erode)))
 
     if plot:
         [show(b) for b in [grad, sm_grad, mask, filled_mask]]
