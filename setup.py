@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="nd2tif",
-    version="0.3.0-dev",
+    version="0.4.0-dev",
     description="Compress nd2 into multi-dimensional tiff",
     author="Andrey Aristov",
     author_email="aaristov@pasteur.fr",
@@ -20,6 +20,7 @@ setup(
         "tifffile",
         "tqdm",
         "pandas",
+        "seaborn"
     ],
     python_requires=">=3.8",
     packages=find_packages(),
