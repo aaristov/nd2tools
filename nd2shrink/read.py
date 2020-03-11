@@ -16,6 +16,7 @@ def nd2(path: str, pos_limit=None):
     with nd.ND2_Reader(path,) as frames:
         logger.info(frames.sizes)
         logger.info(frames.metadata)
+        logger.info(f'calibration_um={frames.calibration}')
         json.dump(
             frames.metadata,
             open(path.replace(".nd2", "_meta.json"), "w"),
@@ -25,7 +26,11 @@ def nd2(path: str, pos_limit=None):
         frames.iter_axes = "m"
         frames.bundle_axes = bundle
         for well in tqdm(frames[:pos_limit]):
-            yield transform.Well(well, bundle)
+            yield transform.Well(
+                array=well, 
+                order=bundle,
+                calibration_um=frames.calibration
+            )
 
 
 def tiff(path: str) -> np.ndarray:
