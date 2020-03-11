@@ -13,7 +13,7 @@ def main(path, rescale=4, to_8bits=True):
         logger.error("Provide valid .nd2 path")
         return False
 
-    reader = read.nd2(path, pos_limit=2)
+    reader = read.nd2(path, pos_limit=None)
 
     new_path = path.replace(".nd2", f"_downscale_{rescale}x.tif")
 
