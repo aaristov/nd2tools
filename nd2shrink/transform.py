@@ -28,7 +28,9 @@ class Well(ImageJStack):
     def __init__(
         self, array: np.ndarray, order: str, calibration_um: float = None
     ):
-        assert array.ndim == len(order)
+        assert array.ndim == len(order), (
+            f'array.ndim {array.ndim} is not the same as order len {order}'
+        )
         self.array = reshape_like_IJ(array, order)
         self.order = ImageJStack.default_order
         self.shape = self.array.shape
