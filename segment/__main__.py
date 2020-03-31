@@ -44,7 +44,7 @@ def process(img, index=0, save="png", dirr=None):
         threshold=0.3,
         erode=8,
         sigma=5,
-        lim_major_axis_length=(50, 300),
+        lim_major_axis_length=(50, 700),
         plot=1,
     )
 
