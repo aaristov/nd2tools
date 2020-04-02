@@ -9,3 +9,4 @@ tifffile
 tqdm
 pandas
 statannot
+jupyterlab
