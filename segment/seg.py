@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-def crop_and_segment(img, save="png", dirr='.', lim_major_axis_length=(50, 300)):
+def crop_and_segment(img, save="png", dirr='.', lim_major_axis_length=(50, 300), print_dot=False):
     index = img["well_index"]
     xy = img["well"]
     calibration_um = img["calibration_um"]
@@ -48,6 +48,8 @@ def crop_and_segment(img, save="png", dirr='.', lim_major_axis_length=(50, 300))
     res = get_props(seg, well_index=index)
 
     logger.debug(res)
+    if print_dot:
+        print('.', end='')
     if len(res) > 1:
         res = res[np.argmax([a["area"] for a in res])]
 
