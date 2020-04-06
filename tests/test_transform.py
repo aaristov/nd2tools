@@ -2,7 +2,7 @@
 
 import numpy as np
 from numpy.testing import assert_array_equal
-from nd2shrink import transform, read
+from nd2tif import transform, read
 from scipy.ndimage import binary_erosion
 import logging
 

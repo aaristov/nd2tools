@@ -14,7 +14,7 @@
 
 ### Use:
 
-`python -m nd2shrink path_to_nd2`
+`python -m nd2tif path_to_nd2`
 
 # Bin 16x stitched nd2:
 
