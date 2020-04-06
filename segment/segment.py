@@ -29,7 +29,7 @@ def findSpheroid(
     and area filling. Sph. must have a dark border around
     it.
 
-    returns mask
+    returns mask, of (mask, figure) if plot=True
     """
 
     result1, result2 = np.gradient(imCropped)
