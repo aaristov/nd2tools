@@ -51,7 +51,23 @@ Creates ImageJ-formatted tif file in the same folder. Can be opened by drag'n'dr
 
 ### Use
 
-`python -m segment dataset.nd2`
+`python -m segment dataset1.nd2 dataset2.nd2 ...`
+
+```
+python -m segment --help
+Usage: __main__.py [OPTIONS] [PATH]...
+
+Options:
+  -o, --out_dir_suffix TEXT       Where to save the preview png for
+                                  segmentation.  [default: _segment]
+
+  -l, --len_range_px <INTEGER INTEGER>...
+                                  min, max length of major axis in pixels
+                                  [default: 50, 500]
+
+  --log TEXT                      Logging level  [default: info]
+  --help                          Show this message and exit.
+```
 
 #### Input:
 
@@ -65,7 +81,7 @@ Creates ImageJ-formatted tif file in the same folder. Can be opened by drag'n'dr
   - D1:
     - dataset.nd2
     - dataset_stats.csv <- table with columns (area, eccentricity, major_axis_length) all in pixels.
-    - dataset:
+    - dataset_segment:
       - Pos_000.png
       - Pos_001.png
 
