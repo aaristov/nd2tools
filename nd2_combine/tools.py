@@ -5,7 +5,7 @@ import sys
 import numpy as np
 import logging
 from tqdm import tqdm
-from nd2shrink.transform import Well
+from nd2tif.transform import Well
 
 logger = logging.getLogger(__name__)
 
