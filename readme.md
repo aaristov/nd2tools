@@ -1,6 +1,10 @@
 #  nd2 to tif conversion tools
 
-## Installation
+# Installation
+
+You can use local installation or Docker container
+
+## Local installation using miniconda
 
 1. Download and install [miniconda3](https://docs.conda.io/en/latest/miniconda.html)
 2. Create new environment with python 3.8
@@ -9,7 +13,7 @@
 3. Install the package `pip install -U git+https://gitlab.pasteur.fr/aaristov/nd2shrink.git`
 4. Optional. On Windows you will need C++ runtime binaries to use `pims`. Download and install it from [here](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 
-## Docker image
+## Docker container
 
 If using Mac or Linux it's highly recommended using preconfigured  Docker container.
 
@@ -32,8 +36,11 @@ docker run  -it -v /Volumes/Multicell:/Volumes/Multicell python -m nd2tif path_t
 
 Remove `-it` option to run task in the background.
 
+# How To Use CLI (comman line tools)
 
-## Convert multiwell nd2 dataset to tif stacks.
+Package contains several independent modules
+
+## nd2tif: convert multiwell nd2 dataset to tif stacks.
 
 With binning and 16 to 8 bits conversion.
 
@@ -42,6 +49,8 @@ One position 'm' — one ImageJ-formatted tif stack with all channels and z plan
 ### Use:
 
 `python -m nd2tif path_to_nd2`
+
+Available options:
 
 ```
 python -m nd2tif --help
@@ -57,7 +66,6 @@ Options:
   --help                     Show this message and exit.
 ```
 
-### input
 #### Input:
 
 - Folder:
@@ -102,7 +110,7 @@ Options:
       - Pos_001.tif <- D1, D2 images for well 1
       - Pos_002.tif <- D1, D2 images for well 2
 
-# Segment organoids in bright field
+## segment: Segment organoids in bright field
 
 ### Use
 
@@ -127,7 +135,7 @@ Options:
 #### Input:
 
 - Folder:
-  - D1: 
+  - D1:
     - dataset.nd2
 
 #### Output:
