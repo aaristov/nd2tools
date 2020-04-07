@@ -38,7 +38,7 @@ class Well(ImageJStack):
 
     def downscale(self, factor):
         array = downscale_local_mean(self.array, (1, 1, 1, factor, factor, 1))
-        return Well(array, self.order, self.calibration_um * factor)
+        return Well(array.astype('uint16'), self.order, self.calibration_um * factor)
 
     def to_8bits(self):
         arr = self.array.astype("f")

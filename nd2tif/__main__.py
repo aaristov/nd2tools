@@ -22,9 +22,7 @@ logger = logging.getLogger(__name__)
 @click.option(
     '--to_8bits',
     is_flag=True,
-    default=True,
-    show_default=True,
-    help='converto to 8 bits'
+    help='convert to 8 bits'
 )
 @click.option(
     '--log', type=str, default='info',
