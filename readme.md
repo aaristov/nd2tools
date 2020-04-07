@@ -22,7 +22,7 @@ Usage: __main__.py [OPTIONS] PATH
 
 Options:
   -b, --bin INTEGER          Image binning  [default: 4]
-  --to_8bits                 converto to 8 bits  [default: True]
+  --to_8bits                 converto to 8 bits  [default: False]
   --log TEXT                 Logging level  [default: info]
   -s, --start INTEGER RANGE  Start numbering from 000 or 001  [default: 0]
   -p, --prefix TEXT          Prefix for tif files  [default: Pos_]
