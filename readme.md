@@ -9,8 +9,35 @@
 3. Install the package `pip install -U git+https://gitlab.pasteur.fr/aaristov/nd2shrink.git`
 4. Optional. On Windows you will need C++ runtime binaries to use `pims`. Download and install it from [here](https://aka.ms/vs/16/release/vc_redist.x64.exe)
 
+## Docker image
 
-## Compress nd2 to tif with 4x binning and 16 to 8 bits conversion
+If using Mac or Linux it's highly recommended using preconfigured  Docker container.
+
+In Windows Docker can't acceess remote volumes or Samba shares. But you can use it with local drives.
+
+First, install [Docker Desktop](https://www.docker.com/products/docker-desktop), register and login.
+
+Open terminal and run
+```
+docker run  -it -v /Volumes/Multicell:/Volumes/Multicell aaristov85/nd2tools
+```
+`-it` option makes shell interactive
+
+`-v /Volumes/Multicell:/Volumes/Multicell` exposes local Multicell mount to the container with the same path. So, when you're inside the container, you can type `python -m nd2tif ` and then drag and drop any nd2 file from your datasets. It will add a valid path the command line, press Enter and enjoy.
+
+In principle, you can insert your command right after container initialization:
+```
+docker run  -it -v /Volumes/Multicell:/Volumes/Multicell python -m nd2tif path_to_nd2
+```
+
+Remove `-it` option to run task in the background.
+
+
+## Convert multiwell nd2 dataset to tif stacks.
+
+With binning and 16 to 8 bits conversion.
+
+One position 'm' — one ImageJ-formatted tif stack with all channels and z planes.
 
 ### Use:
 
@@ -29,6 +56,26 @@ Options:
   -c, --cpu INTEGER          Number of CPU  [default: 1]
   --help                     Show this message and exit.
 ```
+
+### input
+#### Input:
+
+- Folder:
+  - experiment.nd2
+
+#### Run:
+`python -m nd2tif -b 4 --to_8bits -s 1 Folder/experiment.nd2`
+
+#### Output:
+
+
+- Folder:
+  - experiment_binned_4x4_tifs
+    - Pos_001.tif
+    - Pos_002.tif
+    - ...
+  - experiment.nd2
+  - experiment_meta.json
 
 
 # Combine several nd2 into tif time series
