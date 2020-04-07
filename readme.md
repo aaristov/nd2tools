@@ -16,12 +16,20 @@
 
 `python -m nd2tif path_to_nd2`
 
-# Bin 16x stitched nd2:
+```
+python -m nd2tif --help
+Usage: __main__.py [OPTIONS] PATH
 
-### Use:
-`python -m bin_stitched path_to_nd2`
+Options:
+  -b, --bin INTEGER          Image binning  [default: 4]
+  --to_8bits                 converto to 8 bits  [default: True]
+  --log TEXT                 Logging level  [default: info]
+  -s, --start INTEGER RANGE  Start numbering from 000 or 001  [default: 0]
+  -p, --prefix TEXT          Prefix for tif files  [default: Pos_]
+  -c, --cpu INTEGER          Number of CPU  [default: 1]
+  --help                     Show this message and exit.
+```
 
-Creates ImageJ-formatted tif file in the same folder. Can be opened by drag'n'drop in Fiji/ImageJ.
 
 # Combine several nd2 into tif time series
 

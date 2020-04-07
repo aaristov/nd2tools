@@ -1,6 +1,6 @@
 import numpy as np
 from skimage.transform import downscale_local_mean
-from nd2shrink import save
+from nd2tif import save
 import logging
 from nd2reader import ND2Reader
 

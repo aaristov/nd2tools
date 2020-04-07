@@ -1,7 +1,7 @@
 import pims_nd2 as nd
 import numpy as np
 from tqdm.auto import tqdm
-from nd2shrink import transform
+from nd2tif import transform
 from tifffile import imread
 import logging
 import os
@@ -13,6 +13,9 @@ logger.setLevel(logging.INFO)
 
 
 def nd2(path: str, pos_limit=None):
+    '''
+    Read nd2 and yield transform.Well objects
+    '''
     with nd.ND2_Reader(path,) as frames:
         logger.info(frames.sizes)
         logger.info(frames.metadata)
@@ -27,7 +30,7 @@ def nd2(path: str, pos_limit=None):
         frames.bundle_axes = bundle
         for well in tqdm(frames[:pos_limit]):
             yield transform.Well(
-                array=well, 
+                array=well,
                 order=bundle,
                 calibration_um=frames.calibration
             )

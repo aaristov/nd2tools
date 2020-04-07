@@ -1,6 +1,6 @@
 import numpy
 from tifffile import TiffWriter, imwrite
-from nd2shrink import transform
+from nd2tif import transform
 import logging
 
 
