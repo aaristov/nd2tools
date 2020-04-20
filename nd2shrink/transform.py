@@ -137,3 +137,21 @@ def recursive_downscale(file: ND2Reader, axes: list, sizes: dict, mod):
         print(len(arr), yx.shape, ' -> ', res.shape)
         axes.append(ax)
         return np.array(arr, dtype=yx.dtype)
+
+
+
+def to_8bits(array):
+    '''
+    Converts array to 8 bits by scaling last two dimensions (yx) from 0 to 255.
+    Function intendent to convert 2D yx, or 3D cyx stacks.
+    In case of stacks rescaing must be upgraded to preserve inter-z relative intensities.
+    '''
+    arr = array.astype("f")
+    lim_shape = list(arr.shape)
+    lim_shape[-2:] = [1, 1]
+    lim_shape = tuple(lim_shape)
+    _min = arr.min(axis=(-1,-2)).reshape(lim_shape)
+    _max = arr.max(axis=(-1,-2)).reshape(lim_shape)
+    logger.debug(f"min/max: {_min}/{_max}")
+    new_array = (arr - _min) * 255 / (_max - _min)
+    return new_array.astype('uint8')
