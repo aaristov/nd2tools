@@ -20,6 +20,7 @@ setup(
         "tifffile",
         "tqdm",
         "pandas",
+        "seaborn",
         "statannot"
     ],
     python_requires=">=3.8",

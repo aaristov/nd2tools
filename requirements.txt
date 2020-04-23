@@ -8,5 +8,6 @@ pytest
 tifffile
 tqdm
 pandas
+seaborn
 statannot
 jupyterlab
