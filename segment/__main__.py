@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 @click.argument('path',  nargs=-1)#, help='one or several nd2 files')
 @click.option(
     '--out_dir_suffix', '-o',
-    # type=click.Path(),
     default='_segment',
     show_default=True,
     help='Where to save the preview png for segmentation.'
@@ -30,7 +29,7 @@ def main(path:list=[], out_dir_suffix:str='', len_range_px:tuple=(50,500), log='
     logging.basicConfig(level=getattr(logging, log.upper()))
     logger = logging.getLogger(__name__)
     logger.setLevel(getattr(logging, log.upper()))
-    
+
     flist = check_paths(path)
     logger.info(f'Total {len(flist)} files')
 
@@ -83,47 +82,6 @@ def create_results_dir(nd2_path, suffix=""):
     except FileExistsError:
         logger.warning(f"{dirr} already exists")
     return dirr
-
-
-def process(img, index=0, save="png", dirr=None):
-    index = img["well_index"]
-    xy = img["well"]
-    shape = xy.shape
-    crop = xy[
-        shape[0] // 4 : shape[0] * 3 // 4, shape[1] // 4 : shape[1] * 3 // 4,
-    ]
-
-    logging.info(f"Processing {index} well")
-    seg, fig = segment.findSpheroid(
-        crop,
-        threshold=0.3,
-        erode=8,
-        sigma=5,
-        lim_major_axis_length=(50, 700),
-        plot=1,
-    )
-
-    if save == "tif":
-        stack = np.array([img["well"], seg], dtype="uint16")
-        well = tools.Well(
-            stack, order="cyx", calibration_um=img["calibration_um"]
-        )
-        well.save_tif(os.path.join(dirr, f"Pos_{index:03d}.tif"))
-    if save == "png":
-        fig.savefig(os.path.join(dirr, f"Pos_{index:03d}.png"))
-
-    res = segment.get_props(seg, well_index=index)
-
-    print(res)
-    if len(res) > 1:
-        res = res[np.argmax([a["area"] for a in res])]
-
-        print(res)
-        return res
-    elif len(res) == 1:
-        return res[0]
-    else:
-        return {"well_index": index}
 
 
 if __name__ == "__main__":
