@@ -21,7 +21,7 @@ setup(
         "tqdm",
         "pandas",
         "seaborn",
-        "statannot"
+        "statannot",
         "click"
     ],
     python_requires=">=3.8",
