@@ -15,14 +15,20 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
+def crop_center(array):
+    shape = array.shape
+    crop =  array[
+        shape[0] // 4 : shape[0] * 3 // 4, shape[1] // 4 : shape[1] * 3 // 4,
+    ]
+    return crop
+
+
 def crop_and_segment(img, save="png", dirr='.', lim_major_axis_length=(50, 300), print_dot=False):
     index = img["well_index"]
     xy = img["well"]
     calibration_um = img["calibration_um"]
-    shape = xy.shape
-    crop = xy[
-        shape[0] // 4 : shape[0] * 3 // 4, shape[1] // 4 : shape[1] * 3 // 4,
-    ]
+
+    crop = crop_center(xy)
 
     logging.debug(f"Processing {index} well")
     seg, fig = find_spheroid(
@@ -30,7 +36,7 @@ def crop_and_segment(img, save="png", dirr='.', lim_major_axis_length=(50, 300),
         threshold=0.3,
         erode=8,
         sigma=5,
-        lim_major_axis_length=(50, 700),
+        lim_major_axis_length=lim_major_axis_length,
         plot=1,
     )
 
