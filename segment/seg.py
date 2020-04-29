@@ -145,7 +145,8 @@ def get_props(mask: np.ndarray, **kwargs):
     # assert lab.max() == 1, f'number of segments is {lab.max()}'
     reg = regionprops(lab)
     return [
-        {
+        {   "x": r.centroid[1],
+            "y": r.centroid[0],
             "area": r.area,
             "eccentricity": r.eccentricity,
             "major_axis_length": r.major_axis_length,
