@@ -1,7 +1,7 @@
 from pims_nd2 import ND2_Reader
 import numpy as np
 import sys
-from nd2shrink import transform
+from nd2tif import transform
 
 
 def main(path, factor=16):

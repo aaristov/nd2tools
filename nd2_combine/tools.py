@@ -5,7 +5,7 @@ import sys
 import numpy as np
 import logging
 from tqdm import tqdm
-from nd2shrink.transform import Well
+from nd2tif.transform import Well
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +46,16 @@ def create_out_folder(path, condition, subname="Combined"):
 
 
 def read_nd2(path: str, bundle_axes="yx", pos_limit=None):
+    '''
+    Reads nd2 file using pims_ND2.ND2_reader
+    Yields a dictionary
+    {
+        "well_index": index,
+        "well": well, - single well ('m')
+        "order": bundle_axes,
+        "calibration_um": px_size_um,
+    }
+    '''
     logger.debug(f"read_nd2: open {path}")
     with nd.ND2_Reader(path,) as frames:
         logger.debug(frames.sizes)

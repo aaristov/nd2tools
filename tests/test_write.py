@@ -1,6 +1,6 @@
-from nd2shrink import save
+from nd2tif import save
 import numpy
-from nd2shrink import read
+from nd2tif import read
 
 import os, sys
 

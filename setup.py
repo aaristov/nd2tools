@@ -22,6 +22,7 @@ setup(
         "pandas",
         "seaborn",
         "statannot"
+        "click"
     ],
     python_requires=">=3.8",
     packages=find_packages(),

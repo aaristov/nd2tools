@@ -4,7 +4,7 @@ import numpy as np
 from skimage.draw import ellipse
 from skimage.transform import rotate
 
-import segment
+from segment import seg
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -18,8 +18,8 @@ def test_segment():
     rr, cc = ellipse(cx, cy, b, a)
     image[rr, cc] = 1.0
 
-    mask = segment.findSpheroid(image, plot=0)
-    props = segment.get_props(mask)
+    mask = seg.find_spheroid(image, plot=0)
+    props = seg.get_props(mask)
     logger.debug(f"len(props) {len(props)}")
     np.testing.assert_almost_equal(
         props[0]["eccentricity"], (1 - b ** 2 / a ** 2) ** 0.5, 0.02
