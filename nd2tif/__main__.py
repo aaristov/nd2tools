@@ -69,6 +69,7 @@ def main(path:str='', bin:int=4, to_8bits:bool=True, log='info', start=0, prefix
             p = Pool(processes=(n_cpu := min([cpu, cpu_count()])))
             logger.info(f'Running {n_cpu} workers')
             out = p.map(fun, iterator)
+            p.close()
         except Exception as e:
             logging.error(e, 'Fall bask to map')
             out = list(map(fun, iterator))
