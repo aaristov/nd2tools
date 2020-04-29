@@ -23,8 +23,13 @@ logger = logging.getLogger(__name__)
 )
 @click.option('--len_range_px', '-l', type=(int, int), default=(50,500), show_default=True, help='min, max length of major axis in pixels')
 @click.option('--log', type=str, default='info', show_default=True, help='Logging level')
+@click.option(
+    '--cpu', '-c', type=int,
+    default=1, show_default=True,
+    help='Number of CPU'
+)
 
-def main(path:list=[], out_dir_suffix:str='', len_range_px:tuple=(50,500), log='info'):
+def main(path:list=[], out_dir_suffix:str='', len_range_px:tuple=(50,500), log='info', cpu:int = 1):
 
     logging.basicConfig(level=getattr(logging, log.upper()))
     logger = logging.getLogger(__name__)
@@ -33,7 +38,13 @@ def main(path:list=[], out_dir_suffix:str='', len_range_px:tuple=(50,500), log='
     flist = check_paths(path)
     logger.info(f'Total {len(flist)} files')
 
-    fun = partial(process, out_dir_suffix=out_dir_suffix, len_range_px=len_range_px, logger=logger)
+    fun = partial(
+        process,
+        out_dir_suffix=out_dir_suffix,
+        len_range_px=len_range_px,
+        logger=logger,
+        cpu=cpu
+    )
     _ = list(map(fun, flist))
     return True
 
@@ -48,25 +59,25 @@ def check_paths(paths:list):
     return flist
 
 
-def process(path:str='', out_dir_suffix:str='', len_range_px:tuple=(50,500), logger=logging):
+def process(path:str='', out_dir_suffix:str='', len_range_px:tuple=(50,500), logger=logging, cpu: int = 1):
     logger.info(f'Processing {path}')
     logger.debug(f'len_range_px = {len_range_px}')
     reader = tools.read_nd2(path)
     dirr = create_results_dir(path, suffix=out_dir_suffix)
 
-    try:
-        p = Pool(processes=(c := cpu_count()))
-        logger.info(f'Processing using pool of {c} workers')
-        res = p.map(
-            partial(seg.crop_and_segment, dirr=dirr, lim_major_axis_length=len_range_px, print_dot=True),
-            reader
-        )
-    except Exception as e:
-        logger.error(e, 'fall back to serial execution')
-        res = list(map(
-            partial(seg.crop_and_segment, dirr=dirr, lim_major_axis_length=len_range_px),
-            tools.tqdm(reader, desc='Well')
-        ))
+    pfun = partial(seg.crop_and_segment, dirr=dirr, lim_major_axis_length=len_range_px, print_dot=True)
+    fun = partial(seg.crop_and_segment, dirr=dirr, lim_major_axis_length=len_range_px)
+    if cpu > 1:
+        try:
+            p = Pool(processes=(c := cpu_count()))
+            logger.info(f'Processing using pool of {c} workers')
+            res = p.map(pfun, reader)
+            p.close()
+        except Exception as e:
+            logger.error(e, 'fall back to serial execution')
+            res = list(map(fun, tools.tqdm(reader, desc='Well')))
+    else:
+        res = list(map(fun, tools.tqdm(reader, desc='Well')))
     df = pd.DataFrame(res)
     csv_path = path.replace(".nd2", "_stats.csv")
     df.to_csv(csv_path)
