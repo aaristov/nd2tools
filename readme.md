@@ -1,3 +1,5 @@
+![Python package](https://github.com/aaristov/nd2tools/workflows/Python%20package/badge.svg)
+
 #  nd2 to tif conversion tools
 
 # Installation
